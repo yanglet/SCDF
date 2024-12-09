@@ -1,0 +1,17 @@
+logging:
+  level:
+    root: error
+
+spring:
+  application:
+    name: batch
+  profiles:
+    active: local
+  batch:
+    job:
+      name: ${job.name:NONE}
+
+  # spring cloud task ????? ?? ?? ?? off
+  cloud:
+    task:
+      initialize-enabled: false
