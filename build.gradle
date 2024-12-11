@@ -30,6 +30,7 @@ ext {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-batch'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-json' // json 관련 라이브러리 못찾는다는 오류 없애준다 굳
 
 	implementation 'org.springframework.cloud:spring-cloud-starter-task'
 
