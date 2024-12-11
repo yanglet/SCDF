@@ -1,0 +1,53 @@
+services:
+  dataflow-server:
+    user: root
+    image: springcloud/spring-cloud-dataflow-server:${DATAFLOW_VERSION:-2.11.3-SNAPSHOT}${BP_JVM_VERSION:-}
+    container_name: dataflow-server
+    ports:
+      - "9393:9393"
+    environment:
+      - LANG=en_US.utf8
+      - LC_ALL=en_US.utf8
+      - JDK_JAVA_OPTIONS=-Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8
+      # Set CLOSECONTEXTENABLED=true to ensure that the CRT launcher is closed.
+      - SPRING_CLOUD_DATAFLOW_APPLICATIONPROPERTIES_TASK_SPRING_CLOUD_TASK_CLOSECONTEXTENABLED=true
+      - SPRING_CLOUD_SKIPPER_CLIENT_SERVER_URI=${SKIPPER_URI:-http://skipper-server:7577}/api
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/scdf?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul&characterEncoding=UTF-8&autoReconnect=true&permitMysqlScheme
+      - SPRING_DATASOURCE_USERNAME=user
+      - SPRING_DATASOURCE_PASSWORD=user
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.mariadb.jdbc.Driver
+      - SPRING_FLYWAY_ENABLED=false
+    depends_on:
+      - skipper-server
+    restart: always
+    volumes:
+      - ${HOST_MOUNT_PATH:-.}:${DOCKER_MOUNT_PATH:-/home/cnb/scdf}
+      - ./build:/home/cnb/build
+
+  skipper-server:
+    user: root
+    image: springcloud/spring-cloud-skipper-server:${SKIPPER_VERSION:-2.11.3-SNAPSHOT}${BP_JVM_VERSION:-}
+    container_name: skipper-server
+    ports:
+      - "7577:7577"
+      - ${APPS_PORT_RANGE:-20000-20195:20000-20195}
+    environment:
+      - LANG=en_US.utf8
+      - LC_ALL=en_US.utf8
+      - JDK_JAVA_OPTIONS=-Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8
+      - SERVER_PORT=7577
+      - SPRING_CLOUD_SKIPPER_SERVER_PLATFORM_LOCAL_ACCOUNTS_DEFAULT_PORTRANGE_LOW=20000
+      - SPRING_CLOUD_SKIPPER_SERVER_PLATFORM_LOCAL_ACCOUNTS_DEFAULT_PORTRANGE_HIGH=20190
+      - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_CLOUD_SKIPPER_SERVER_DEPLOYER=ERROR
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/scdf?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul&characterEncoding=UTF-8&autoReconnect=true&permitMysqlScheme
+      - SPRING_DATASOURCE_USERNAME=user
+      - SPRING_DATASOURCE_PASSWORD=user
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.mariadb.jdbc.Driver
+      - SPRING_FLYWAY_ENABLED=false
+    restart: always
+    volumes:
+      - ${HOST_MOUNT_PATH:-.}:${DOCKER_MOUNT_PATH:-/home/cnb/scdf}
+
+networks:
+  scdf-network:
+    external: true

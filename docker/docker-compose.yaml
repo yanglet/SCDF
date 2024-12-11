@@ -9,6 +9,7 @@ services:
       MYSQL_USER: user
       MYSQL_PASSWORD: user
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      JDK_JAVA_OPTIONS: '-Dfile.encoding=UTF-8 -Dsun.jnu.encoding=UTF-8'
     ports:
       - '3306:3306'
     command:
@@ -16,18 +17,7 @@ services:
       - --collation-server=utf8mb4_unicode_ci
       - --lower_case_table_names=1
 
-#  app:
-#    container_name: app
-#    build:
-#      context: ./
-#      dockerfile: Dockerfile
-#    command: [
-#      "java",
-#      "-jar",
-#      "app.jar",
-#      "--job.name=inactivateUser"
-#    ]
-#    ports:
-#      - '8080:8080'
-#    depends_on:
-#      - mysql-db
+networks:
+  scdf-network:
+    name: scdf-network
+    driver: bridge

@@ -10,8 +10,11 @@ spring:
   batch:
     job:
       name: ${job.name:NONE}
+    jdbc:
+      table-prefix: boot3_batch_
 
   # spring cloud task ????? ?? ?? ?? off
   cloud:
     task:
       initialize-enabled: false
+      table-prefix: boot3_task_
