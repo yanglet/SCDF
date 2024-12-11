@@ -25,6 +25,7 @@ public class InactivateUserItemReader extends AbstractPagingItemReader<UserDto> 
 
     private LocalDateTime now;
     private Long currentId;
+    private final String CURRENT_ID = "CURRENT_ID";
 
     @PostConstruct
     public void init() {
@@ -34,13 +35,13 @@ public class InactivateUserItemReader extends AbstractPagingItemReader<UserDto> 
 
     @Override
     public void open(ExecutionContext executionContext) throws ItemStreamException {
-        executionContext.getLong("CURRENT_ID", currentId);
+        executionContext.getLong(CURRENT_ID, currentId);
         now = LocalDateTime.now();
     }
 
     @Override
     public void update(ExecutionContext executionContext) throws ItemStreamException {
-        executionContext.getLong("CURRENT_ID", currentId);
+        executionContext.getLong(CURRENT_ID, currentId);
     }
 
     @Override
